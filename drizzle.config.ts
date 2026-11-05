@@ -5,7 +5,10 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/qr_ordering',
+    url:
+      process.env.DIRECT_DATABASE_URL ||
+      process.env.DATABASE_URL ||
+      'postgres://postgres:postgres@localhost:5432/qr_ordering',
   },
   strict: true,
   verbose: true,

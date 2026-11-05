@@ -45,7 +45,8 @@ git push -u origin main
 
 | Variable Name | Value Description | Example / Notes |
 |---|---|---|
-| `DATABASE_URL` | Your Neon / Supabase Postgres URI | `postgres://user:pass@ep-xyz.neon.tech/db?sslmode=require` |
+| `DATABASE_URL` | Pooled connection URI (port 6543 / pooler) | `postgres://user:pass@ep-xyz-pooler.neon.tech/neondb?sslmode=require` |
+| `DIRECT_DATABASE_URL` | Unpooled connection URI (port 5432) for migrations | `postgres://user:pass@ep-xyz.neon.tech/neondb?sslmode=require` |
 | `AUTH_SECRET` | 32+ character random secret string | e.g. `auth-secret-production-key-32chars-min-ok!` |
 | `DEVICE_COOKIE_SECRET` | 32+ character random secret string | e.g. `cookie-secret-production-key-32ch-min!` |
 | `APP_URL` | Your Vercel production domain | `https://your-restaurant-app.vercel.app` |

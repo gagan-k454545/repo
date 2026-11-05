@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { requireRole } from '@/modules/auth/guards';
 import { db } from '@/db/client';
 import { pairedDevices, events } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { formatErrorResponse } from '@/lib/errors';
 
 export const runtime = 'nodejs';
@@ -16,7 +16,26 @@ export async function POST(request: NextRequest) {
   try {
     const auth = await requireRole(['KITCHEN', 'MANAGER', 'OWNER']);
 
-    // Record presence heartbeat
+    // Record presence heartbeat in PostgreSQL so all serverless instances know KDS is online
+    const updated = await db
+      .update(pairedDevices)
+      .set({ lastSeenAt: new Date() })
+      .where(and(eq(pairedDevices.restaurantId, auth.restaurantId), eq(pairedDevices.kind, 'KDS')))
+      .returning();
+
+    if (updated.length === 0) {
+      const tokenHash = crypto.createHash('sha256').update(`kds-${auth.restaurantId}`).digest('hex');
+      await db
+        .insert(pairedDevices)
+        .values({
+          restaurantId: auth.restaurantId,
+          kind: 'KDS',
+          name: 'Kitchen Display',
+          tokenHash,
+          lastSeenAt: new Date(),
+        })
+        .onConflictDoNothing();
+    }
     const response = NextResponse.json({
       data: {
         status: 'online',

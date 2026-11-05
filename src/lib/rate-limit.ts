@@ -54,3 +54,14 @@ export async function checkRateLimit(
     throw new AppError('RATE_LIMITED', errorMessage, 429);
   }
 }
+
+export function getClientIp(headers: Headers | { get: (name: string) => string | null }): string {
+  const forwarded = headers.get('x-forwarded-for');
+  if (forwarded) {
+    const first = forwarded.split(',')[0].trim();
+    if (first) return first;
+  }
+  const realIp = headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+  return '127.0.0.1';
+}

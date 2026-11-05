@@ -3,6 +3,7 @@ import crypto from 'crypto';
 export interface DeviceCookiePayload {
   deviceId: string;
   tableId: string;
+  tokenHash?: string;
   issuedAt: number;
 }
 

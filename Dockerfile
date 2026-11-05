@@ -5,13 +5,14 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 FROM base AS deps
-COPY package.json pnpm-workspace.yaml* ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 RUN pnpm install --frozen-lockfile || pnpm install
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV BUILD_STANDALONE=true
 RUN pnpm build
 
 FROM node:22-alpine AS runner

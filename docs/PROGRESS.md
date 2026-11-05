@@ -64,4 +64,8 @@
 - [x] Dedicated Unified Admin Navbar (`src/components/admin/AdminNavbar.tsx`) persistent across all staff surfaces with active tab indicator, live sync status, staff role badge, and 1-click customer view preview
 - [x] Complete separation of Customer Dining app (zero staff links or admin controls)
 - [x] Vercel & Serverless Hosting Readiness: `vercel.json` config, build-phase poller suppression in `instrumentation.ts`, `prepare: false` pooled cloud PostgreSQL support for Neon/Supabase, resilient client safety polling on all surfaces, and complete deployment guide (`docs/VERCEL_DEPLOYMENT.md`)
+- [x] Serverless Database & Pooler Hardening: Separated `DATABASE_URL` (pooled port 6543) from `DIRECT_DATABASE_URL` (direct port 5432) for Drizzle migrations; configured client with `max: 1` connections, `prepare: false`, and `globalThis` connection caching
+- [x] Stateless Realtime & SSE Stream Hardening: Implemented database delta poller inside SSE stream loops (`/api/public/stream` and `/api/staff/stream`), immediate `: connected\n\n` proxy header flush, 15s heartbeats, and 25s graceful auto-reconnect window (`retry: 1000`) preventing Vercel 504 timeouts
+- [x] Security & Edge IP Extraction: Implemented `getClientIp` in `src/lib/rate-limit.ts` extracting from `x-forwarded-for` and `x-real-ip`; persisted KDS heartbeat in `paired_devices`
+- [x] Production Deployment Hardening: Standalone output conditional in `next.config.mjs`, Docker multi-stage build optimization with `BUILD_STANDALONE=true`, and security headers in `vercel.json`
 - [x] Phase 2 Quality Gate (`pnpm gate:phase2`) PASSED

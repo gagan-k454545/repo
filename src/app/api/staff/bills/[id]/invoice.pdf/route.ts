@@ -9,6 +9,7 @@ import { formatErrorResponse, AppError } from '@/lib/errors';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30;
 
 export async function GET(
   request: NextRequest,

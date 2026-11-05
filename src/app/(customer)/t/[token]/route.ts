@@ -16,13 +16,14 @@ export async function GET(
 ) {
   const { token } = await params;
 
-  let table: { id: string; restaurantId: string; isEnabled: boolean; deletedAt: Date | null } | undefined;
+  let table: { id: string; restaurantId: string; token: string; isEnabled: boolean; deletedAt: Date | null } | undefined;
 
   if (token === 'demo') {
     const [demoTable] = await db
       .select({
         id: tables.id,
         restaurantId: tables.restaurantId,
+        token: tables.token,
         isEnabled: tables.isEnabled,
         deletedAt: tables.deletedAt,
       })
@@ -39,6 +40,7 @@ export async function GET(
       .select({
         id: tables.id,
         restaurantId: tables.restaurantId,
+        token: tables.token,
         isEnabled: tables.isEnabled,
         deletedAt: tables.deletedAt,
       })
@@ -54,10 +56,12 @@ export async function GET(
 
   // Generate random 128-bit device ID (or preserve existing device ID if valid)
   const deviceId = crypto.randomBytes(16).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(table.token).digest('hex').slice(0, 16);
 
   const cookiePayload = {
     deviceId,
     tableId: table.id,
+    tokenHash,
     issuedAt: Date.now(),
   };
 

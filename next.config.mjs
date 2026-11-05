@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Only use standalone output in Docker/Linux build environments to prevent Windows symlink EPERM
-  output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
+  // Use standalone output for Docker environments, omit on Vercel to use native serverless tracing
+  output: process.env.VERCEL
+    ? undefined
+    : (process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined),
   reactStrictMode: true,
   poweredByHeader: false,
   serverExternalPackages: ['@electric-sql/pglite'],

@@ -46,16 +46,21 @@ if (usePglite) {
   >;
 } else {
   const isServerless = !!process.env.VERCEL || process.env.NEXT_RUNTIME === 'edge';
+  const connectionUrl =
+    env.DATABASE_URL.startsWith('postgres://') || env.DATABASE_URL.startsWith('postgresql://')
+      ? env.DATABASE_URL
+      : 'postgres://postgres:postgres@127.0.0.1:5432/qr_ordering';
+
   queryClient =
     globalForDb.queryClient ||
-    postgres(env.DATABASE_URL, {
-      max: isServerless ? 5 : (env.NODE_ENV === 'production' ? 20 : 10),
+    postgres(connectionUrl, {
+      max: isServerless ? 1 : (env.NODE_ENV === 'production' ? 20 : 10),
       idle_timeout: 20,
       connect_timeout: 10,
-      prepare: false, // Essential for Neon/Supabase transaction connection poolers
+      prepare: false, // Essential for Neon/Supabase transaction connection poolers (PgBouncer)
     });
 
-  if (env.NODE_ENV !== 'production') {
+  if (env.NODE_ENV !== 'production' || isServerless) {
     globalForDb.queryClient = queryClient;
   }
 
