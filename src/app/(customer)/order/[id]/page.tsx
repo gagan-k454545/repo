@@ -61,7 +61,13 @@ export default function OrderTrackingPage({
       } catch {}
     });
 
+    // Fallback safety poll every 4s for serverless resilience
+    const pollTimer = setInterval(() => {
+      fetchOrder();
+    }, 4000);
+
     return () => {
+      clearInterval(pollTimer);
       eventSource.close();
     };
   }, [orderId]);

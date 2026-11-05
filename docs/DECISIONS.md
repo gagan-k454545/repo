@@ -31,3 +31,7 @@ This document records all architectural choices, assumptions, and resolved ambig
 ### ADR-006: Direct Demo Table Access Route (/t/demo)
 - **Context**: The QR system requires scanning `/t/[token]` to issue the signed `qr_device` cookie before browsing `/menu`. Direct navigation from a desktop browser homepage caused a 401 error because no table token had been scanned.
 - **Decision**: Provide `/t/demo` which selects Table 1, issues a signed device cookie, and redirects to `/menu`. Real QR codes with 128-bit hex tokens remain the standard production entry path.
+
+### ADR-007: Vercel & Serverless PostgreSQL Compatibility
+- **Context**: Hosting on Vercel runs Next.js in a serverless environment where background timers freeze, filesystem is ephemeral (cannot use local PGlite), and pooled cloud connections (Neon, Supabase PgBouncer) reject client-side prepared statements.
+- **Decision**: Configure `postgres-js` with `prepare: false` and controlled serverless pool sizing (`max: 5`) for cloud pooler compatibility. Guard `instrumentation.ts` against executing background polling timers during `next build`. Add 4-second safety polling reconciliation to all client tracking surfaces (`/order/[id]`, `/kitchen`, `/waiter`, `/admin/dashboard`) to ensure live updates remain fully resilient regardless of serverless connection limits.

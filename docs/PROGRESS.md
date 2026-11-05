@@ -63,4 +63,5 @@
 - [x] Premium SaaS UI Overhaul: Linear/Stripe-grade dark aesthetic, glassmorphic navigation, official Indian Veg/Non-Veg badges, live KDS ticket board, executive financial analytics, and responsive mobile dining experience
 - [x] Dedicated Unified Admin Navbar (`src/components/admin/AdminNavbar.tsx`) persistent across all staff surfaces with active tab indicator, live sync status, staff role badge, and 1-click customer view preview
 - [x] Complete separation of Customer Dining app (zero staff links or admin controls)
+- [x] Vercel & Serverless Hosting Readiness: `vercel.json` config, build-phase poller suppression in `instrumentation.ts`, `prepare: false` pooled cloud PostgreSQL support for Neon/Supabase, resilient client safety polling on all surfaces, and complete deployment guide (`docs/VERCEL_DEPLOYMENT.md`)
 - [x] Phase 2 Quality Gate (`pnpm gate:phase2`) PASSED

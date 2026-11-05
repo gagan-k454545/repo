@@ -104,5 +104,3 @@ export const bus = globalForRealtime.realtimeBus || new RealtimeBus();
 if (process.env.NODE_ENV !== 'production') {
   globalForRealtime.realtimeBus = bus;
 }
-
-bus.init();

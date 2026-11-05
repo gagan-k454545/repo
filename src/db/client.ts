@@ -45,12 +45,14 @@ if (usePglite) {
     typeof drizzlePostgres<typeof schema>
   >;
 } else {
+  const isServerless = !!process.env.VERCEL || process.env.NEXT_RUNTIME === 'edge';
   queryClient =
     globalForDb.queryClient ||
     postgres(env.DATABASE_URL, {
-      max: env.NODE_ENV === 'production' ? 50 : 10,
+      max: isServerless ? 5 : (env.NODE_ENV === 'production' ? 20 : 10),
       idle_timeout: 20,
       connect_timeout: 10,
+      prepare: false, // Essential for Neon/Supabase transaction connection poolers
     });
 
   if (env.NODE_ENV !== 'production') {
